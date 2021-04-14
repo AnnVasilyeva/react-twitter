@@ -6,3 +6,10 @@
 2. добавить в понравившиеся
 3. отсортировать
 4. отметить как избранные
+
+Использованные технологии:
+* React-app
+* Reactstrap
+* Bootstrap
+* nanoid
+* styled components

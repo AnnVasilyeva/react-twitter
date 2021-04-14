@@ -6,6 +6,7 @@ import PostStatusFilter from "./components/PostStatusFilter/PostStatusFilter";
 import PostList from "./components/PostList/PostList";
 import PostAddForm from "./components/PostAddForm/PostAddForm";
 import styled from 'styled-components';
+import { nanoid } from 'nanoid';
 
 const AppBlock = styled.div`
     margin: 0 auto;
@@ -26,32 +27,32 @@ export default class App extends Component {
                     label: 'Going to learn React',
                     important: true,
                     like: false,
-                    id: 1
+                    id: nanoid()
                 },
                 {
                     label: 'That is so good',
                     important: false,
                     like: false,
-                    id: 2
+                    id: nanoid()
                 },
                 {
                     label: 'I need a break...',
                     important: false,
                     like: false,
-                    id: 3
+                    id: nanoid()
                 }
             ],
             term: '',
             filter: 'all'
         };
-        this.deleteItem = this.deleteItem.bind(this);
-        this.addItem = this.addItem.bind(this);
-        this.onToggleImportant = this.onToggleImportant.bind(this);
-        this.onToggleLiked = this.onToggleLiked.bind(this);
-        this.maxId = 4;
+        //если не использовать стрелочные функции в методах, писать так:
+        // this.deleteItem = this.deleteItem.bind(this);
+        // this.addItem = this.addItem.bind(this);
+        // this.onToggleImportant = this.onToggleImportant.bind(this);
+        // this.onToggleLiked = this.onToggleLiked.bind(this);
     }
 
-    deleteItem (id) {
+    deleteItem = (id) => {
         //нельзя просто удалить splice элемент из массива
         //это нарушает структуру state
         this.setState(({data}) => {
@@ -71,11 +72,11 @@ export default class App extends Component {
         })
     }
 
-    addItem(body) {
+    addItem = (body) => {
         const newItem = {
             label: body,
             important: false,
-            id: this.maxId++
+            id: nanoid()
         }
 
         this.setState(({data})=> {
@@ -86,14 +87,25 @@ export default class App extends Component {
         })
     }
 
-    onToggleImportant(id) {
+    onToggle = (id, toggle) => {
         this.setState(({data}) => {
             //ищем индекс нужного элемента
             const index = data.findIndex(elem => elem.id === id);
 
-            //в нем мы заменяем свойство like на противоположное
+            //в нем мы заменяем свойство important/like на противоположное
             const old = data[index];
-            const newItem = {...old, important: !old.important};
+            let newItem;
+            switch(toggle) {
+                case 'important':
+                    newItem = {...old, important: !old.important};
+                    break;
+                case 'like':
+                    newItem = {...old, like: !old.like};
+                    break;
+                default:
+                    newItem = old;
+                    break;
+            }
 
             // вырезаем массив с двух сторон,
             // до измененного объекта и после. и вместо старого объекта вставляем новый
@@ -102,23 +114,6 @@ export default class App extends Component {
             return {data: newArr}
         })
 
-    }
-
-    onToggleLiked(id) {
-        this.setState(({data}) => {
-            //ищем индекс нужного элемента
-            const index = data.findIndex(elem => elem.id === id);
-
-            //в нем мы заменяем свойство like на противоположное
-            const old = data[index];
-            const newItem = {...old, like: !old.like};
-
-            // вырезаем массив с двух сторон,
-            // до измененного объекта и после. и вместо старого объекта вставляем новый
-            const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
-
-            return {data: newArr}
-        })
     }
 
     searchPost(items, term) {
@@ -150,7 +145,10 @@ export default class App extends Component {
 
   render () {
         const {data, term, filter} = this.state;
+        //проходим по массиву записей и берем только те где like:true
+      // и извлекаем длину этого массива, это и есть количество понравившихся записей
         const liked = data.filter(item => item.like).length;
+        //количество постов в общем
         const allPosts = data.length;
 
         const visiblePosts = this.filterPost(this.searchPost(data, term), filter);
@@ -173,8 +171,7 @@ export default class App extends Component {
               <PostList
                   posts={visiblePosts}
                   onDelete={this.deleteItem}
-                  onToggleImportant={this.onToggleImportant}
-                  onToggleLiked={this.onToggleLiked}
+                  onToggle={this.onToggle}
               />
               <PostAddForm
                   onAdd={this.addItem}

@@ -7,10 +7,12 @@ export default function PostListItem (props){
 
     let classNames = 'app-list-item d-flex justify-content-between';
 
+    //добавляем класс important
     if(important) {
         classNames +=' important';
     }
 
+    //добавляем класс like
     if(like) {
         classNames +=' like';
     }
@@ -27,16 +29,16 @@ export default function PostListItem (props){
                     className='btn-star btn-sm'
                     onClick={onToggleImportant}
                 >
-                    <i className='fa fa-star'></i>
+                    <i className='fa fa-star'/>
                 </button>
                 <button
                     type='button'
                     className='btn-trash btn-sm'
                     onClick={onDelete}
                 >
-                    <i className='fa fa-trash-o'></i>
+                    <i className='fa fa-trash-o'/>
                 </button>
-                <i className='fa fa-heart'></i>
+                <i className='fa fa-heart'/>
             </div>
 
         </div>

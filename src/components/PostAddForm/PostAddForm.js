@@ -7,8 +7,6 @@ export default class PostAddForm extends Component {
         this.state = {
             text: ''
         }
-
-
     }
 
     onValueChange = (e) => {
@@ -42,7 +40,6 @@ export default class PostAddForm extends Component {
                 <button
                     type='submit'
                     className='btn btn-outline-secondary'
-
                 >
                     Добавить</button>
             </form>
